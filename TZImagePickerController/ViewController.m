@@ -319,7 +319,12 @@
     //     imagePickerVc.navigationBar.standardAppearance = barAppearance;
     //     imagePickerVc.navigationBar.scrollEdgeAppearance = barAppearance;
     // }
-    
+    // 授权页
+//    imagePickerVc.albumViewBgColor = UIColor.yellowColor;
+//    imagePickerVc.tipTextColor = UIColor.redColor;
+//    imagePickerVc.tipTextFont = [UIFont systemFontOfSize:20];
+//    imagePickerVc.settingTextColor = UIColor.purpleColor;
+//    imagePickerVc.settingTextFont = [UIFont systemFontOfSize:20];
     imagePickerVc.iconThemeColor = [UIColor colorWithRed:31 / 255.0 green:185 / 255.0 blue:34 / 255.0 alpha:1.0];
     imagePickerVc.showPhotoCannotSelectLayer = YES;
     imagePickerVc.cannotSelectLayerColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];

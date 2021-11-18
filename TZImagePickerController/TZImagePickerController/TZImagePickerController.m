@@ -30,6 +30,7 @@
     UILabel *_HUDLabel;
     
     UIStatusBarStyle _originStatusBarStyle;
+    TZAlbumPickerController *_albumPickerVc;
 }
 /// Default is 4, Use in photos collectionView in TZPhotoPickerController
 /// 默认4列, TZPhotoPickerController中的照片collectionView
@@ -361,7 +362,31 @@
     _iconThemeColor = iconThemeColor;
     [self configDefaultImageName];
 }
+#pragma mark - 授权页配置
+- (void)setAlbumViewBgColor:(UIColor *)albumViewBgColor {
+    _albumViewBgColor = albumViewBgColor;
+    _albumPickerVc.view.backgroundColor = albumViewBgColor;
+}
 
+- (void)setTipTextColor:(UIColor *)tipTextColor {
+    _tipTextColor = tipTextColor;
+    _tipLabel.textColor = tipTextColor;
+}
+
+- (void)setTipTextFont:(UIFont *)tipTextFont {
+    _tipTextFont = tipTextFont;
+    _tipLabel.font = tipTextFont;
+}
+
+- (void)setSettingTextColor:(UIColor *)settingTextColor {
+    _settingTextColor = settingTextColor;
+    [_settingBtn setTitleColor:settingTextColor forState:UIControlStateNormal];
+}
+
+- (void)setSettingTextFont:(UIFont *)settingTextFont {
+    _settingTextFont = settingTextFont;
+    _settingBtn.titleLabel.font = settingTextFont;
+}
 - (void)configDefaultBtnTitle {
     self.doneBtnTitleStr = [NSBundle tz_localizedStringForKey:@"Done"];
     self.cancelBtnTitleStr = [NSBundle tz_localizedStringForKey:@"Cancel"];
