@@ -89,6 +89,18 @@
     [self configNaviTitleAppearance];
 }
 
+- (void)setNaviShadowImage:(UIImage *)naviShadowImage {
+    _naviShadowImage = naviShadowImage;
+    self.navigationBar.shadowImage = naviShadowImage;
+    [self configNavigationBarAppearance];
+}
+
+- (void)setNaviBackgroundImage:(UIImage *)naviBackgroundImage {
+    _naviBackgroundImage = naviBackgroundImage;
+    [self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    [self configNavigationBarAppearance];
+}
+
 - (void)configNaviTitleAppearance {
     NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
     if (self.naviTitleColor) {
@@ -111,6 +123,8 @@
             barAppearance.backgroundColor = self.navigationBar.barTintColor;
         }
         barAppearance.titleTextAttributes = self.navigationBar.titleTextAttributes;
+        barAppearance.shadowImage = self.naviShadowImage;
+        barAppearance.backgroundImage = self.naviBackgroundImage;
         self.navigationBar.standardAppearance = barAppearance;
         self.navigationBar.scrollEdgeAppearance = barAppearance;
     }
@@ -388,6 +402,19 @@
     _settingTextFont = settingTextFont;
     _settingBtn.titleLabel.font = settingTextFont;
 }
+#pragma mark - 图片选择页配置
+- (void)setPhotoPickerBgColor:(UIColor *)photoPickerBgColor {
+    _photoPickerBgColor = photoPickerBgColor;
+}
+
+- (void)setBottomToolBarBgColor:(UIColor *)bottomToolBarBgColor {
+    _bottomToolBarBgColor = bottomToolBarBgColor;
+}
+
+- (void)setDivideLineColor:(UIColor *)divideLineColor {
+    _divideLineColor = divideLineColor;
+}
+
 - (void)configDefaultBtnTitle {
     self.doneBtnTitleStr = [NSBundle tz_localizedStringForKey:@"Done"];
     self.cancelBtnTitleStr = [NSBundle tz_localizedStringForKey:@"Cancel"];

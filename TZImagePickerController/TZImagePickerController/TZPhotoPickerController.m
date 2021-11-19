@@ -170,6 +170,7 @@ static CGFloat itemMargin = 5;
 
 - (void)configCollectionView {
     if (!_collectionView) {
+        TZImagePickerController *tzImagePicker = (TZImagePickerController *)self.navigationController;
         _layout = [[UICollectionViewFlowLayout alloc] init];
         _collectionView = [[TZCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_layout];
         if (@available(iOS 13.0, *)) {
@@ -177,6 +178,7 @@ static CGFloat itemMargin = 5;
         } else {
             _collectionView.backgroundColor = [UIColor whiteColor];
         }
+        _collectionView.backgroundColor = tzImagePicker.photoPickerBgColor;
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.alwaysBounceHorizontal = NO;
@@ -241,7 +243,7 @@ static CGFloat itemMargin = 5;
     } else {
         _bottomToolBar.backgroundColor = [UIColor colorWithRed:rgb green:rgb blue:rgb alpha:1.0];
     }
-    
+    _bottomToolBar.backgroundColor = tzImagePickerVc.bottomToolBarBgColor;
     _previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_previewButton addTarget:self action:@selector(previewButtonClick) forControlEvents:UIControlEventTouchUpInside];
     _previewButton.titleLabel.font = [UIFont systemFontOfSize:16];
@@ -329,7 +331,7 @@ static CGFloat itemMargin = 5;
     } else {
         _divideLine.backgroundColor = [UIColor colorWithRed:rgb2 green:rgb2 blue:rgb2 alpha:1.0];
     }
-    
+    _divideLine.backgroundColor = tzImagePickerVc.divideLineColor;
     [_bottomToolBar addSubview:_divideLine];
     [_bottomToolBar addSubview:_previewButton];
     [_bottomToolBar addSubview:_doneButton];

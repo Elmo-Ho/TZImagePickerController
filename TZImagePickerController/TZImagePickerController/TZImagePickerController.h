@@ -245,6 +245,8 @@
 @property (nonatomic, strong) UIFont *naviTitleFont;
 @property (nonatomic, strong) UIColor *barItemTextColor;
 @property (nonatomic, strong) UIFont *barItemTextFont;
+@property (nonatomic, strong) UIImage *naviShadowImage;
+@property (nonatomic, strong) UIImage *naviBackgroundImage;
 
 @property (nonatomic, copy) NSString *doneBtnTitleStr;
 @property (nonatomic, copy) NSString *cancelBtnTitleStr;
@@ -264,6 +266,10 @@
 @property (nonatomic, strong) UIFont    *tipTextFont;
 @property (nonatomic, strong) UIColor   *settingTextColor;
 @property (nonatomic, strong) UIFont    *settingTextFont;
+#pragma mark - 图片选择页配置
+@property (nonatomic, strong) UIColor   *photoPickerBgColor;
+@property (nonatomic, strong) UIColor   *bottomToolBarBgColor;
+@property (nonatomic, strong) UIColor   *divideLineColor;
 #pragma mark -
 - (void)cancelButtonClick;
 
