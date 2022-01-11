@@ -846,15 +846,19 @@ static CGFloat itemMargin = 5;
 - (void)prepareScrollCollectionViewToBottom {
     if (_shouldScrollToBottom && _models.count > 0) {
         // try fix #1562：https://github.com/banchichen/TZImagePickerController/issues/1562
-        if (@available(iOS 15.0, *)) {
-            [_collectionView performBatchUpdates:^{} completion:^(BOOL finished) {
-                [self scrollCollectionViewToBottom];
-            }];
-        } else {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self scrollCollectionViewToBottom];
-            });
-        }
+//        if (@available(iOS 15.0, *)) {
+//            [_collectionView performBatchUpdates:^{} completion:^(BOOL finished) {
+//                [self scrollCollectionViewToBottom];
+//            }];
+//        } else {
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                [self scrollCollectionViewToBottom];
+//            });
+//        }
+        // 临时处理
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self scrollCollectionViewToBottom];
+        });
     } else {
         _collectionView.hidden = NO;
     }
