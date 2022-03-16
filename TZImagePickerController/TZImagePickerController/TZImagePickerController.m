@@ -4,7 +4,7 @@
 //
 //  Created by 谭真 on 15/12/24.
 //  Copyright © 2015年 谭真. All rights reserved.
-//  version 3.7.1 - 2022.01.07
+//  version 3.7.6 - 2022.03.02
 //  更多信息，请前往项目的github地址：https://github.com/banchichen/TZImagePickerController
 
 #import "TZImagePickerController.h"
@@ -167,6 +167,7 @@
     [super viewWillAppear:animated];
     _originStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
     [UIApplication sharedApplication].statusBarStyle = self.statusBarStyle;
+    [self configNavigationBarAppearance];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -337,6 +338,7 @@
     self.photoPreviewOriginDefImageName = @"preview_original_def";
     self.photoOriginDefImageName = @"photo_original_def";
     self.photoOriginSelImageName = @"photo_original_sel";
+    self.addMorePhotoImage = [UIImage tz_imageNamedFromMyBundle:@"addMore"];
 }
 
 - (void)setTakePictureImageName:(NSString *)takePictureImageName {
@@ -811,7 +813,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if ([[TZImageManager manager] authorizationStatusAuthorized]) {
+    if ([[TZImageManager manager] authorizationStatusAuthorized] || !SYSTEM_VERSION_GREATER_THAN_15) {
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     }
     self.isFirstAppear = YES;
@@ -1144,7 +1146,6 @@
         }
     }
     _languageBundle = [NSBundle bundleWithPath:[[NSBundle tz_imagePickerBundle] pathForResource:usedLanguage ofType:@"lproj"]];
-
 }
 
 @end
