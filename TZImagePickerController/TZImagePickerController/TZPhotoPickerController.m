@@ -15,7 +15,6 @@
 #import "TZImageManager.h"
 #import "TZVideoPlayerController.h"
 #import "TZGifPhotoPreviewController.h"
-#import "TZLocationManager.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "TZImageRequestOperation.h"
 #import "TZAuthLimitedFooterTipView.h"
@@ -110,7 +109,7 @@ static CGFloat itemMargin = 5;
         [tzImagePickerVc.childViewControllers firstObject].navigationItem.backBarButtonItem = backItem;
     }
     _showTakePhotoBtn = _model.isCameraRoll && ((tzImagePickerVc.allowTakePicture && tzImagePickerVc.allowPickingImage) || (tzImagePickerVc.allowTakeVideo && tzImagePickerVc.allowPickingVideo));
-    _authorizationLimited = [[TZImageManager manager] isPHAuthorizationStatusLimited];
+    _authorizationLimited = _model.isCameraRoll && [[TZImageManager manager] isPHAuthorizationStatusLimited];
     // [self resetCachedAssets];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarOrientationNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
     
@@ -193,6 +192,7 @@ static CGFloat itemMargin = 5;
         [self.view addSubview:_collectionView];
         [_collectionView registerClass:[TZAssetCell class] forCellWithReuseIdentifier:@"TZAssetCell"];
         [_collectionView registerClass:[TZAssetCameraCell class] forCellWithReuseIdentifier:@"TZAssetCameraCell"];
+        [_collectionView registerClass:[TZAssetAddMoreCell class] forCellWithReuseIdentifier:@"TZAssetAddMoreCell"];
     } else {
         [_collectionView reloadData];
     }
@@ -212,6 +212,7 @@ static CGFloat itemMargin = 5;
         CGFloat rgb = 153 / 256.0;
         _noDataLabel.textColor = [UIColor colorWithRed:rgb green:rgb blue:rgb alpha:1.0];
         _noDataLabel.font = [UIFont boldSystemFontOfSize:20];
+        _noDataLabel.frame = _collectionView.bounds;
         [_collectionView addSubview:_noDataLabel];
     } else if (_noDataLabel) {
         [_noDataLabel removeFromSuperview];
@@ -578,8 +579,9 @@ static CGFloat itemMargin = 5;
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     // the cell lead to add more photo / 去添加更多照片的cell
     if (indexPath.item == [self getAddMorePhotoCellIndex]) {
-        TZAssetCameraCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"TZAssetCameraCell" forIndexPath:indexPath];
+        TZAssetAddMoreCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"TZAssetAddMoreCell" forIndexPath:indexPath];
         cell.imageView.image = tzImagePickerVc.addMorePhotoImage;
+        cell.tipLabel.text = [NSBundle tz_localizedStringForKey:@"Add more accessible photos"];
         cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
         cell.imageView.backgroundColor = [UIColor colorWithWhite:1.000 alpha:0.500];
         return cell;
@@ -825,6 +827,7 @@ static CGFloat itemMargin = 5;
 - (void)pushImagePickerController {
     // 提前定位
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
+#ifdef TZ_HAVE_LOCATION_CODE
     if (tzImagePickerVc.allowCameraLocation) {
         __weak typeof(self) weakSelf = self;
         [[TZLocationManager manager] startLocationWithSuccessBlock:^(NSArray<CLLocation *> *locations) {
@@ -835,6 +838,7 @@ static CGFloat itemMargin = 5;
             strongSelf.location = nil;
         }];
     }
+#endif
     
     UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypeCamera;
     if ([UIImagePickerController isSourceTypeAvailable: sourceType]) {
@@ -1100,8 +1104,21 @@ static CGFloat itemMargin = 5;
         return;
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.model refreshFetchResult];
-        [self fetchAssetModels];
+        PHFetchResultChangeDetails *changeDetail = [changeInstance changeDetailsForFetchResult:self.model.result];
+        if (changeDetail == nil) return;
+        if (changeDetail.hasIncrementalChanges == NO) {
+            [self.model refreshFetchResult];
+            [self fetchAssetModels];
+        } else {
+            NSInteger insertedCount = changeDetail.insertedObjects.count;
+            NSInteger removedCount = changeDetail.removedObjects.count;
+            NSInteger changedCount = changeDetail.changedObjects.count;
+            if (insertedCount > 0 || removedCount > 0 || changedCount > 0) {
+                self.model.result = changeDetail.fetchResultAfterChanges;
+                self.model.count = changeDetail.fetchResultAfterChanges.count;
+                [self fetchAssetModels];
+            }
+        }
     });
 }
 
